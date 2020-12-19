@@ -16,7 +16,7 @@ public class StartActivity extends AppCompatActivity {
 
         // 로딩페이지(스플래쉬)
         Intent intent = new Intent(this, SplashActivity.class);
-        startActivity(intent);
+//        startActivity(intent);
     }
 
     public void chooseCampus(View view) {

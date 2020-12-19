@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.yoitgeo_google">
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION " />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/green_leaf_marker"
+        android:label="요잇지오(Yo-it-Geo)"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".SplashActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
+        <activity
+            android:name=".StartActivity"
+            android:label="부산지질공원 해설 앱 Yo-it-Geo"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".DisplayGameActivity"
+            android:label="OX 퀴즈"/>
+        <activity android:name=".DisplaySubCommentActivity" />
+        <activity android:name=".DisplayCommentActivity" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBLlbCvY4N1_gPS2hc30exq2eSwdsHRL0c" /> <!-- commit할 때 key 지우기 -->
+        <activity
+            android:name=".MainActivity"
+            android:label="부산지질공원 해설 앱 Yo-it-Geo"
+            android:screenOrientation="portrait">
+        </activity>
+    </application>
+
+</manifest>

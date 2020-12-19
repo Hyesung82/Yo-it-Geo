@@ -6,11 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -22,7 +20,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -45,17 +42,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -120,12 +106,15 @@ public class MainActivity extends AppCompatActivity implements
         "테니스장", "한어울터", "공학2관", "동원 장보고관", "솔동산", "양어장", "양어장 주차장장",
             "양어장관리사", "한솔관", "행복기숙사", "한울관"};
 
-
-    double attPosition[][] = {};
+    double attPositions[][] = {{35.1336261887728, 129.10165435259654},
+            {35.1327717594553, 129.10247744349874}, {35.13211126746617, 129.10284088408116}};
+    String attNames[] = {"모과나무", "백경동산", "히말라야시다 숲"};
 
 
     Button bCourseOn, bCourseOff;
     Polyline polyline1;
+    MarkerOptions markerOptions[];
+    MarkerOptions attMarkerOptions[];
 
 
     private GoogleMap mGoogleMap = null;
@@ -147,6 +136,8 @@ public class MainActivity extends AppCompatActivity implements
 
 
     MarkerOptions[] arrMarkerOptions = new MarkerOptions[positions.length];
+    Marker[] markers = new Marker[positions.length];
+    Marker[] attMarkers = new Marker[attPositions.length];
 
 
     @Override
@@ -251,8 +242,8 @@ public class MainActivity extends AppCompatActivity implements
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // 권한이 승인될 경우
                     System.out.println("권한 승인됨");
-                } else {
-                    Toast.makeText(this, "권한 체크 거부 됨", Toast.LENGTH_SHORT).show();
+                } else {//////고치기
+//                    Toast.makeText(this, "권한 체크 거부 됨", Toast.LENGTH_SHORT).show();
                     finish();
                 }
         }
@@ -271,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
-        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(20));
+        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
 
 
         BitmapDrawable bitmapdraw = (BitmapDrawable)getResources().getDrawable(R.drawable.baekgyeongee);
@@ -288,16 +279,15 @@ public class MainActivity extends AppCompatActivity implements
 //        markerOption.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
 //        googleMap.addMarker(markerOption);
 
-        MarkerOptions markerOptions[] = new MarkerOptions[buildingNums.length];
+        markerOptions = new MarkerOptions[buildingNums.length];
         for (int i = 0; i < buildingNums.length; i++) {
-            Log.d("i 값", String.valueOf(i));
             markerOptions[i] = new MarkerOptions();
             markerOptions[i]
                     .position(new LatLng(positions[i][0], positions[i][1]))
                     .title(buildingNums[i])
                     .snippet(buildingNames[i]);
             markerOptions[i].icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
-            googleMap.addMarker(markerOptions[i]);
+            markers[i] = googleMap.addMarker(markerOptions[i]);
         }
 
         System.arraycopy(markerOptions, 0, arrMarkerOptions, 0, markerOptions.length);
@@ -311,9 +301,20 @@ public class MainActivity extends AppCompatActivity implements
         });
 
 
+        attMarkerOptions = new MarkerOptions[attNames.length];
+        for (int i = 0; i < attNames.length; i++) {
+            attMarkerOptions[i] = new MarkerOptions();
+            attMarkerOptions[i]
+                    .position(new LatLng(attPositions[i][0], attPositions[i][1]))
+                    .snippet(attNames[i]);
+            attMarkers[i] = googleMap.addMarker(attMarkerOptions[i]);
+            attMarkers[i].setVisible(false);
+        }
+
+
         startLocationUpdates();
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
-        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(20));
+        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
         mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
@@ -448,6 +449,14 @@ public class MainActivity extends AppCompatActivity implements
         bCourseOn.setVisibility(View.INVISIBLE);
         bCourseOff.setVisibility(View.VISIBLE);
 
+        for (Marker marker: markers) {
+            marker.setVisible(false);
+        }
+
+        for (Marker marker: attMarkers) {
+            marker.setVisible(true);
+        }
+
         polyline1 = mGoogleMap.addPolyline(new PolylineOptions()
                 .clickable(true)
                 .add(
@@ -469,11 +478,21 @@ public class MainActivity extends AppCompatActivity implements
                         new LatLng(35.13348560912848, 129.10252999027702)));
 
         polyline1.setColor(COLOR_VIOLET_ARGB);
+
+
     }
 
     public void hideRoute(View view) {
         bCourseOff.setVisibility(View.INVISIBLE);
         bCourseOn.setVisibility(View.VISIBLE);
+
+        for (Marker marker: markers) {
+            marker.setVisible(true);
+        }
+
+        for(Marker marker: attMarkers) {
+            marker.setVisible(false);
+        }
 
         polyline1.setVisible(false);
     }

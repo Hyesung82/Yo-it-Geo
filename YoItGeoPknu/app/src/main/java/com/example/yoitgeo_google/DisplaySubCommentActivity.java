@@ -1,14 +1,8 @@
 package com.example.yoitgeo_google;
 
-import android.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
-
-import com.google.android.gms.maps.model.LatLng;
-
-import java.util.HashMap;
 
 public class DisplaySubCommentActivity extends AppCompatActivity {
     String[][] igidaeComment = {{"누리관", "누리관입니다."},

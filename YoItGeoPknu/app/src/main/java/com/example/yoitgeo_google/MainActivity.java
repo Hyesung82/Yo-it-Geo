@@ -6,9 +6,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -19,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -39,7 +42,20 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -61,6 +77,8 @@ public class MainActivity extends AppCompatActivity implements
             this.name = name;
         }
     }
+
+    private static final int COLOR_VIOLET_ARGB = 0x806042f5;
 
     double positions[][] = {{35.134055, 129.103140}, {35.134467, 129.103149},
             {35.134807, 129.103108}, {35.135348, 129.103015}, {35.135456, 129.103823},
@@ -86,7 +104,6 @@ public class MainActivity extends AppCompatActivity implements
             {35.13215627026807, 129.10202090187508}, {35.1331144092725, 129.1014991400482},
             {35.1331144092725, 129.1014991400482}, {35.13141522491809, 129.10629533539554},
             {35.132223653614155, 129.10706420123142}};
-
     String buildingNums[] = {"A11", "A12", "A13", "A15", "A17", "A21", "A22", "A23", "A26", "A27",
     "B11", "B12", "B13", "B14", "B15", "B21", "B22",
             "C11", "C12", "C13", "C14", "C21", "C22", "C23", "C24", "C25", "C26", "C27", "C28",
@@ -94,16 +111,21 @@ public class MainActivity extends AppCompatActivity implements
             "E11", "E12", "E13", "E14", "E17", "E18", "E21", "E22", "E26", "E27", "E28", "E29",
             "E16", "E30", "E31"};
     String buildingNames[] = {"대학본부", "웅비관", "누리관", "향파관", "워커하우스",
-    "미래관", "디자인관", "나래관", "부산창업카페", "식품가공공장",  // District A
-    "위드센터", "나비센터", "충무관", "환경해양관", "자연과학1관", "가온관", "청운관",  // District B
-    "수산질병관리원", "장영실관", "해양공동연구관", "직장어린이집", "수산과학관", "건축관", "호연관",
-    "자연과학2관", "인문사회경영관", "해양수산LMO격리사육동", "수조실험동", "아름관",  // District C
-    "운동장 본부석", "대운동장", "대학극장", "체육관",  // District D
+        "미래관", "디자인관", "나래관", "부산창업카페", "식품가공공장",  // District A
+        "위드센터", "나비센터", "충무관", "환경해양관", "자연과학1관", "가온관", "청운관",  // District B
+        "수산질병관리원", "장영실관", "해양공동연구관", "직장어린이집", "수산과학관", "건축관", "호연관",
+        "자연과학2관", "인문사회경영관", "해양수산LMO격리사육동", "수조실험동", "아름관",  // District C
+        "운동장 본부석", "대운동장", "대학극장", "체육관",  // District D
             "세종1관", "세종2관", "공학1관", "학술정보관",
-    "테니스장", "한어울터", "공학2관", "동원 장보고관", "솔동산", "양어장", "양어장 주차장장",
+        "테니스장", "한어울터", "공학2관", "동원 장보고관", "솔동산", "양어장", "양어장 주차장장",
             "양어장관리사", "한솔관", "행복기숙사", "한울관"};
 
-    building sectionA[] = new building[9];
+
+    double attPosition[][] = {};
+
+
+    Button bCourseOn, bCourseOff;
+    Polyline polyline1;
 
 
     private GoogleMap mGoogleMap = null;
@@ -124,7 +146,6 @@ public class MainActivity extends AppCompatActivity implements
     private Location location;
 
 
-//    MarkerOptions[] arrMarkerOptions = new MarkerOptions[1];
     MarkerOptions[] arrMarkerOptions = new MarkerOptions[positions.length];
 
 
@@ -132,6 +153,10 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        bCourseOn = findViewById(R.id.bCourseOn);
+        bCourseOff = findViewById(R.id.bCourseOff);
+        bCourseOff.setVisibility(View.INVISIBLE);
 
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -246,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
-        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(20));
 
 
         BitmapDrawable bitmapdraw = (BitmapDrawable)getResources().getDrawable(R.drawable.baekgyeongee);
@@ -288,7 +313,7 @@ public class MainActivity extends AppCompatActivity implements
 
         startLocationUpdates();
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
-        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(20));
         mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
@@ -419,9 +444,38 @@ public class MainActivity extends AppCompatActivity implements
         finish();
     }
 
-    public void quiz(View view) {
-        Intent intent = new Intent(this, DisplayGameActivity.class);
-        startActivity(intent);
+    public void drawRoute(View view) {
+        bCourseOn.setVisibility(View.INVISIBLE);
+        bCourseOff.setVisibility(View.VISIBLE);
+
+        polyline1 = mGoogleMap.addPolyline(new PolylineOptions()
+                .clickable(true)
+                .add(
+                        new LatLng(35.13339744541469, 129.10109594714365),
+                        new LatLng(35.13343693539021, 129.10205081523),
+                        new LatLng(35.13176104251687, 129.10230831089416),
+                        new LatLng(35.13192775636465, 129.10447016742035),
+                        new LatLng(35.13342378535067, 129.10431461609684),
+                        new LatLng(35.13360364559533, 129.10451844857928),
+                        new LatLng(35.133948556298805, 129.1088883479004),
+                        new LatLng(35.1348421146971, 129.1096387631425),
+                        new LatLng(35.1350843507084, 129.1095992802329),
+                        new LatLng(35.13471834148535, 129.10517599268576),
+                        new LatLng(35.13371711874954, 129.1053010592903),
+                        new LatLng(35.13366328397016, 129.10451120670626),
+                        new LatLng(35.133819386022374, 129.10426766585022),
+                        new LatLng(35.13559036604174, 129.1040372537777),
+                        new LatLng(35.135455756938384, 129.10220079638222),
+                        new LatLng(35.13348560912848, 129.10252999027702)));
+
+        polyline1.setColor(COLOR_VIOLET_ARGB);
+    }
+
+    public void hideRoute(View view) {
+        bCourseOff.setVisibility(View.INVISIBLE);
+        bCourseOn.setVisibility(View.VISIBLE);
+
+        polyline1.setVisible(false);
     }
 
 //    public void onLastLocationButtonClicked(View view) {
@@ -497,48 +551,6 @@ public class MainActivity extends AppCompatActivity implements
         builder.show();
     }
 
-    public void setQuiz(String s) {
-        final String str = s;
-        final int id = Integer.parseInt(s);
-
-        final String[][] quiz = {{"ㄴㄹㄱ", "누리관"},
-                {"ㄷㄱㄱㅁ", "돌개구멍"},
-                {"ㄱㄹㄱㅅ", "구리광산"},
-                {"ㅎㅅㄷㄱ", "해식동굴"},
-                {"ㅎㄱㅅㅅㅇㅁ", "함각섬석암맥"},
-                {"ㅎㅅㄱㄹㅇ", "화산각력암"},
-                {"ㅂㅇ", "벽옥"},
-                {"ㅇㅎㅈㅌㅈㅇㅊ", "응회질퇴적암층"},
-                {"ㅎㅍㄱ", "향파관"}};
-
-        final EditText editText = new EditText(this);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("초성 퀴즈");
-        builder.setMessage("현재 이 곳의 명칭은?\n" + "힌트 : " + quiz[id][0]);
-        builder.setView(editText);
-        builder.setPositiveButton("입력",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        String answer = editText.getText().toString();
-                        if (answer.equals(quiz[id][1])) {
-                            Toast.makeText(getApplicationContext(), "맞았습니다", Toast.LENGTH_SHORT).show();
-                        }
-                        else {
-                            Toast.makeText(getApplicationContext(), "틀렸습니다", Toast.LENGTH_SHORT).show();
-
-                            setDialog(str);
-                        }
-                    }
-                });
-        builder.setNegativeButton("취소",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        //Toast.makeText(getApplicationContext(), "취소를 선택했습니다.", Toast.LENGTH_LONG).show();
-                    }
-                });
-        builder.show();
-    }
 
     public void accessMarker(String s) {
         int id = 0;
@@ -556,68 +568,4 @@ public class MainActivity extends AppCompatActivity implements
 
         startActivity(intent);
     }
-
-
-
-
-
-
-
-
-
-///////////////////////게임하기
-//    public void GameOver(){
-//        AlertDialog.Builder alertDialogBuilder=new AlertDialog.Builder(this);
-//        alertDialogBuilder
-//                .setMessage("게임 종료")
-//                .setCancelable(false)
-//                .setPositiveButton("새 게임", new DialogInterface.OnClickListener(){
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int whichbutton){
-//                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-//                    }
-//                })
-//                .setNegativeButton("나가기", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int whichbutton) {
-//                        System.exit(0);
-//                    }
-//                });
-//        alertDialogBuilder.show();
-//
-//    }
-//    public void NextQuestion(int num){
-//        tv_question.setText(question.getQuestion(num));
-//        btn.setText(question.getchoice1(num));
-//        btn2.setText(question.getchoice2(num));
-//
-//        answer = question.getCorrAnswer(num);
-//    }
-//
-//    //@Override
-//    public void onClick(View v){
-//        switch(v.getId()){
-//            case R.id.btn:
-//                if(btn.getText()==answer){
-//                    Toast.makeText(this,"정답입니다.", Toast.LENGTH_SHORT).show();
-//                    NextQuestion(random.nextInt(questionLength));
-//                }else{
-//                    GameOver();
-//                }
-//                break;
-//
-//            case R.id.btn2:
-//                if(btn2.getText()==answer){
-//                    Toast.makeText(this, "정답입니다.", Toast.LENGTH_SHORT).show();
-//                    NextQuestion(random.nextInt(questionLength));
-//                }else{
-//                    GameOver();
-//                }
-//                break;
-//        }
-//
-//
-//
-//    }
-
 }

@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.HashMap;
 
 public class DisplaySubCommentActivity extends AppCompatActivity {
@@ -41,7 +43,30 @@ public class DisplaySubCommentActivity extends AppCompatActivity {
         {"B22",	"비상발전기실"},
         {"X00",	"복도및홀"}};
 
-    String building_A11_1F[][];
+    String building_A11_1F[][] = {{"101", "창고(시설과)"},
+            {"102", "CO2실"},
+            {"102-1", "창고(생협)"},
+            {"103", "샤워실"},
+            {"104", "창고(시설과)"},
+            {"104B", "비상발전기실"},
+            {"105", "복도및홀"},
+            {"106", "국제교류본부장실"},
+            {"106B", "학생복지과"},
+            {"107", "자료실/장애학생상담실"},
+            {"107-1", "학생복지과장실"},
+            {"108", "안내실"},
+            {"109", "당직실"},
+            {"110", "학사관리과장실"},
+            {"111", "학사관리과,학생서비스센터"},
+            {"111-1", "학적부보관실"},
+            {"111-2", "대학원행정실"},
+            {"112", "대학원"},
+            {"112-1", "행정실장실"},
+            {"X00", "국제교류본부"},
+            {"X01", "국제교류본부"},
+            {"X02", "행정실장실"}};
+
+    String building_A12_1F[][] = {};
 
 
     @Override

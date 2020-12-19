@@ -15,8 +15,9 @@
         android:onClick="showMapImage"
         android:text="캠퍼스맵 사진으로 보기"
         app:layout_constraintBottom_toTopOf="@+id/bFacility"
-        app:layout_constraintTop_toBottomOf="@+id/map"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/map" />
 
     <Button
         android:id="@+id/bFacility"
@@ -24,19 +25,39 @@
         android:layout_height="50dp"
         android:onClick="showFacility"
         android:text="설치 시설 보기"
-        app:layout_constraintBottom_toTopOf="@+id/bQuiz"
-        app:layout_constraintTop_toBottomOf="@+id/bMapImage"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bMapImage" />
 
-    <Button
-        android:id="@+id/bQuiz"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:onClick="quiz"
-        android:text="퀴즈 풀기"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bFacility"
-        tools:layout_editor_absoluteX="0dp" />
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bFacility">
+
+        <Button
+            android:id="@+id/bCourseOn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:onClick="drawRoute"
+            android:text="캠퍼스 투어 코스 보기"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bFacility" />
+
+        <Button
+            android:id="@+id/bCourseOff"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:onClick="hideRoute"
+            android:text="캠퍼스 투어 코스 숨기기"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bFacility" />
+    </FrameLayout>
 
     <fragment
         android:id="@+id/map"
@@ -48,14 +69,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <!--
-    <Button
-        android:id="@+id/onLastLocationButtonClicked"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="내 위치정보 가져오기"
-        android:onClick="onLastLocationButtonClicked" />
-    -->
 
 </android.support.constraint.ConstraintLayout>

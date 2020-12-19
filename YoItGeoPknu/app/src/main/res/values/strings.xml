@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PKNU 캠퍼스 맵</string>
+    <!-- commit할 때 key 지우기 -->
+    <string name="google_maps_key">AIzaSyBLlbCvY4N1_gPS2hc30exq2eSwdsHRL0c</string>
 </resources>

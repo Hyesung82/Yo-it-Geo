@@ -27,7 +27,6 @@
         <activity android:name=".DisplayGameActivity"
             android:label="OX 퀴즈"/>
         <activity android:name=".DisplaySubCommentActivity" />
-        <activity android:name=".DisplayCommentActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

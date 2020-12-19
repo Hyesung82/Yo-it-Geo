@@ -406,11 +406,11 @@ public class MainActivity extends AppCompatActivity implements
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) { }
 
 
-
-    // 버튼 이벤트
+    /* 버튼 이벤트 */
     public void showMapImage(View view) {
-        Intent intent = new Intent(this, DisplayCommentActivity.class);
-        startActivity(intent);
+        MapImageDialog mapImageDialog = new MapImageDialog(this);
+        mapImageDialog.setCancelable(false);
+        mapImageDialog.show();
     }
 
     public void showFacility(View view) {
@@ -541,7 +541,13 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void accessMarker(String s) {
-        final int id = Integer.parseInt(s);
+        int id = 0;
+        for(int i= 0; i < arrMarkerOptions.length; i++) {
+            if(buildingNums[i].equals(s)) {
+                id = i;
+                break;
+            }
+        }
 
         Toast.makeText(getApplicationContext(), arrMarkerOptions[id].getSnippet() + " 설명 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getBaseContext(), DisplaySubCommentActivity.class);

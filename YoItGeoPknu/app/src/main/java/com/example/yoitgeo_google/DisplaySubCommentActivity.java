@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.HashMap;
+
 public class DisplaySubCommentActivity extends AppCompatActivity {
     String[][] igidaeComment = {{"누리관", "누리관입니다."},
             {"돌개구멍", "해안가에 발달한 화산각력암에 마치 공룡 발자국과 같은 형태가 보입니다. 이는 바위의 빈틈에 들어간 자갈이나 모래가 파도에 의해 회전하면서 서서히 바위를 깎아내어 만들어진 돌개구멍(포트홀, phthole)입니다."},
@@ -16,6 +18,31 @@ public class DisplaySubCommentActivity extends AppCompatActivity {
             {"보석광물벽옥", "화산각력암에 마치 붉은색 물감으로 칠을 해놓은 듯한 이것은 보석광물인 벽옥(jasper)입니다. 보통 화산 분출로 형성된 화산암이나 응회암 중에서 맥을 이루며 산출됩니다."},
             {"응회질퇴적암층", "폭발적인 화산활동 이후 휴지기에 화산재들이 섞여 있는 퇴적암(사암과 이암)이 층층이 쌓여 만든 층리가 잘 나타납니다."},
             {"향파관", "향파관입니다."}};
+
+    // 0~5번째 장소에 대해서만 설명 기능 제공
+    String building_A11_B1[][] = {{"B01", "보일러실"}, {"B02",	"감시실"},
+        {"B03",	"전기실"},
+        {"B04",	"입시관리창고"},
+        {"B05",	"학적부보관실"},
+        {"B06",	"문서고"},
+        {"B07",	"교직원 문화공간1(골프)"},
+        {"B08",	"교직원 문화공간2(탁구)"},
+        {"B09",	"교직원 문화공간3(당구)"},
+        {"B10",	"문서고"},
+        {"B11",	"기록관 제2기록물 보존서고"},
+        {"B12",	"기록관 제1기록물 보존서고"},
+        {"B15",	"창고(교무과)"},
+        {"B16",	"물품창고(총무과)"},
+        {"B17",	"창고(시설과)"},
+        {"B18",	"CO2실"},
+        {"B19",	"창고(생협)"},
+        {"B20",	"샤워실"},
+        {"B21",	"창고(시설과)"},
+        {"B22",	"비상발전기실"},
+        {"X00",	"복도및홀"}};
+
+    String building_A11_1F[][];
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

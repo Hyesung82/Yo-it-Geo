@@ -440,9 +440,11 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void showFacility(View view) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.busan.go.kr/geopark/tm0303"));
-        startActivity(intent);
-        finish();
+//        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.busan.go.kr/geopark/tm0303"));
+//        startActivity(intent);
+//        finish();
+
+
     }
 
     public void drawRoute(View view) {
@@ -580,11 +582,15 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
 
-        Toast.makeText(getApplicationContext(), arrMarkerOptions[id].getSnippet() + " 설명 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(getBaseContext(), DisplaySubCommentActivity.class);
+        if(id < 1 || id > 2) {
+            Toast.makeText(getApplicationContext(), "준비 중입니다.", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getApplicationContext(), arrMarkerOptions[id].getSnippet() + " 층별정보 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getBaseContext(), DisplaySubCommentActivity.class);
 
-        intent.putExtra("id", id);
+            intent.putExtra("id", id);
 
-        startActivity(intent);
+            startActivity(intent);
+        }
     }
 }

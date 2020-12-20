@@ -29,7 +29,7 @@ public class AttDescDialog extends Dialog {
     Integer attImages[] = {R.drawable.quince_tree, R.drawable.baekgyeong_hill,
             R.drawable.hymalayacedar_forest, R.drawable.cherry_blossom_road,
             R.drawable.hyangpa_literary_memorial_monument, R.drawable.doran_yard,
-            R.drawable.happy_dorm, };
+            R.drawable.happy_dorm, R.drawable.woongbi};
 
     AttDescDialog attDescDialog;
     public AttDescDialog(@NonNull Context context, int id) {

@@ -428,7 +428,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public void setDefaultLocation() {
         //디폴트 위치,
-        LatLng DEFAULT_LOCATION = new LatLng(35.134204, 129.105272);
+        LatLng DEFAULT_LOCATION = new LatLng(35.13445099190516, 129.10312484560959);
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, 15);
         mGoogleMap.moveCamera(cameraUpdate);

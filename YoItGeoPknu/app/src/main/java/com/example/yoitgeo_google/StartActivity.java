@@ -14,9 +14,13 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
+        GuideDialog guideDialog = new GuideDialog(this);
+        guideDialog.setCancelable(false);
+        guideDialog.show();
+
         // 로딩페이지(스플래쉬)
         Intent intent = new Intent(this, SplashActivity.class);
-//        startActivity(intent);
+        startActivity(intent);
     }
 
     public void chooseCampus(View view) {

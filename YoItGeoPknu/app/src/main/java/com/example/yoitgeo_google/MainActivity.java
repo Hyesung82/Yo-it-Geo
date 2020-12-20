@@ -51,18 +51,6 @@ public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
 
-    class building {
-        double positionX, positionY;  // 좌표
-        String number;  // e.g. A13
-        String name;  // e.g. 누리관
-
-        building(float x, float y, String num, String name) {
-            this.positionX = x;
-            this.positionY = y;
-            this.number = num;
-            this.name = name;
-        }
-    }
 
     private static final int COLOR_VIOLET_ARGB = 0x806042f5;
 
@@ -106,14 +94,33 @@ public class MainActivity extends AppCompatActivity implements
         "테니스장", "한어울터", "공학2관", "동원 장보고관", "솔동산", "양어장", "양어장 주차장장",
             "양어장관리사", "한솔관", "행복기숙사", "한울관"};
 
+
+    double atmPositions[][] = {{35.134015325438924, 129.10482011653497},
+            {35.13166644569704, 129.10353278468196}, {35.13125957138801, 129.10511794439486}};
+    double copyMachinePositions[][] = {{35.13152294986691, 129.10641327706725},
+            {35.132427183897235, 129.10406497217355}, {35.13446425523386, 129.10480528323498},
+            {35.13405741754033, 129.10635077513996}};
+    double certMachinePositions[][] = {{35.134094613350136, 129.10364507887402},
+            {35.13388355471602, 129.10204133818965}, {35.13235714263788, 129.10409158201205},
+            {35.13165890471737, 129.1035955130818}, {35.13417897411345, 129.1080013132986}};
+    double postOffPositions[] = {35.13394735514254, 129.10473868757666};
+    double restaurantPositions[][] = {{35.13405300588866, 129.10578545227187},
+            {35.13420398568213, 129.10649653913197}, {35.13322488270413, 129.10274600913357},
+            {35.133949212210425, 129.10171173586065}};
+    String restaurantNames[] = {"들락날락", "다래락", "라운지오", "라일락"};
+
+
+
     double attPositions[][] = {{35.1336261887728, 129.10165435259654},
             {35.1327717594553, 129.10247744349874}, {35.13211126746617, 129.10284088408116}};
     String attNames[] = {"모과나무", "백경동산", "히말라야시다 숲"};
 
 
     Button bCourseOn, bCourseOff;
+    Button bFacilityOn, bFacilityOff;
     Polyline polyline1;
     MarkerOptions markerOptions[];
+    MarkerOptions facilityMarkerOptions[];
     MarkerOptions attMarkerOptions[];
 
 
@@ -137,6 +144,8 @@ public class MainActivity extends AppCompatActivity implements
 
     MarkerOptions[] arrMarkerOptions = new MarkerOptions[positions.length];
     Marker[] markers = new Marker[positions.length];
+    Marker[] facilityMarekrs = new Marker[atmPositions.length + copyMachinePositions.length
+            + certMachinePositions.length + 1 + restaurantPositions.length];
     Marker[] attMarkers = new Marker[attPositions.length];
 
 
@@ -148,6 +157,10 @@ public class MainActivity extends AppCompatActivity implements
         bCourseOn = findViewById(R.id.bCourseOn);
         bCourseOff = findViewById(R.id.bCourseOff);
         bCourseOff.setVisibility(View.INVISIBLE);
+
+        bFacilityOn = findViewById(R.id.bFacilityOn);
+        bFacilityOff = findViewById(R.id.bFacilityOff);
+        bFacilityOff.setVisibility(View.INVISIBLE);
 
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -195,18 +208,13 @@ public class MainActivity extends AppCompatActivity implements
 
             if (locationList.size() > 0) {
                 location = locationList.get(locationList.size() - 1);
-                //location = locationList.get(0);
 
                 currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
 
-//                String markerTitle = "현재 위치";
-//                String markerSnippet = "위도:" + String.valueOf(location.getLatitude()) + " 경도:" + String.valueOf(location.getLongitude());
 
-                // 현재 위치에 마커 생성하고 이동
-                //setCurrentLocation(location, markerTitle, markerSnippet);
                 int result = checkDistance(location.getLatitude(), location.getLongitude());
                 if (result != -1) {
-//                    setQuiz(arrMarkerOptions[result].getTitle());
+                    setDialog(result);
                     mFusedLocationClient.removeLocationUpdates(locationCallback);
                 }
                 if (result == -1 && checkPermission()) {
@@ -267,7 +275,31 @@ public class MainActivity extends AppCompatActivity implements
 
         BitmapDrawable bitmapdraw = (BitmapDrawable)getResources().getDrawable(R.drawable.baekgyeongee);
         Bitmap b = bitmapdraw.getBitmap();
-        Bitmap smallMarker = Bitmap.createScaledBitmap(b, 64, 64, false);
+        Bitmap baekgyeongee = Bitmap.createScaledBitmap(b, 64, 64, false);
+
+        BitmapDrawable bitmapdraw1 = (BitmapDrawable)getResources().getDrawable(R.drawable.gomsolee);
+        Bitmap b1 = bitmapdraw1.getBitmap();
+        Bitmap gomsolee = Bitmap.createScaledBitmap(b1, 64, 64, false);
+
+        bitmapdraw1 = (BitmapDrawable)getResources().getDrawable(R.drawable.printer);
+        b1 = bitmapdraw1.getBitmap();
+        Bitmap printer = Bitmap.createScaledBitmap(b1, 64, 64, false);
+
+        bitmapdraw1 = (BitmapDrawable)getResources().getDrawable(R.drawable.post_office);
+        b1 = bitmapdraw1.getBitmap();
+        Bitmap post_office = Bitmap.createScaledBitmap(b1, 64, 64, false);
+
+        bitmapdraw1 = (BitmapDrawable)getResources().getDrawable(R.drawable.certificate);
+        b1 = bitmapdraw1.getBitmap();
+        Bitmap certificate = Bitmap.createScaledBitmap(b1, 64, 64, false);
+
+        bitmapdraw1 = (BitmapDrawable)getResources().getDrawable(R.drawable.atm);
+        b1 = bitmapdraw1.getBitmap();
+        Bitmap atm = Bitmap.createScaledBitmap(b1, 64, 64, false);
+
+        bitmapdraw1 = (BitmapDrawable)getResources().getDrawable(R.drawable.restaurant);
+        b1 = bitmapdraw1.getBitmap();
+        Bitmap restaurant = Bitmap.createScaledBitmap(b1, 64, 64, false);
 
 
         /* 마커 생성 */
@@ -276,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements
 //                .position(new LatLng(positions[0][0], positions[0][1]))
 //                .title("A11")
 //                .snippet("대학본부");
-//        markerOption.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+//        markerOption.icon(BitmapDescriptorFactory.fromBitmap(baekgyeongee));
 //        googleMap.addMarker(markerOption);
 
         markerOptions = new MarkerOptions[buildingNums.length];
@@ -286,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements
                     .position(new LatLng(positions[i][0], positions[i][1]))
                     .title(buildingNums[i])
                     .snippet(buildingNames[i]);
-            markerOptions[i].icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+            markerOptions[i].icon(BitmapDescriptorFactory.fromBitmap(baekgyeongee));
             markers[i] = googleMap.addMarker(markerOptions[i]);
         }
 
@@ -301,12 +333,65 @@ public class MainActivity extends AppCompatActivity implements
         });
 
 
+        facilityMarkerOptions = new MarkerOptions[atmPositions.length + copyMachinePositions.length
+                + certMachinePositions.length + 1 + restaurantPositions.length];
+        int index = 0;
+        for (int i = 0; i < atmPositions.length; i++, index++) {
+            facilityMarkerOptions[i] = new MarkerOptions();
+            facilityMarkerOptions[i]
+                    .position(new LatLng(atmPositions[i][0], atmPositions[i][1]))
+                    .title("ATM");
+            facilityMarkerOptions[i].icon(BitmapDescriptorFactory.fromBitmap(atm));
+            facilityMarekrs[i] = googleMap.addMarker(facilityMarkerOptions[i]);
+            facilityMarekrs[i].setVisible(false);
+        }
+        for (int i = 0; i < copyMachinePositions.length; i++, index++) {
+            facilityMarkerOptions[index] = new MarkerOptions();
+            facilityMarkerOptions[index]
+                    .position(new LatLng(copyMachinePositions[i][0], copyMachinePositions[i][1]))
+                    .title("복사기");
+            facilityMarkerOptions[index].icon(BitmapDescriptorFactory.fromBitmap(printer));
+            facilityMarekrs[index] = googleMap.addMarker(facilityMarkerOptions[index]);
+            facilityMarekrs[index].setVisible(false);
+        }
+        for (int i = 0; i < certMachinePositions.length; i++, index++) {
+            facilityMarkerOptions[index] = new MarkerOptions();
+            facilityMarkerOptions[index]
+                    .position(new LatLng(certMachinePositions[i][0], certMachinePositions[i][1]))
+                    .title("증명서 무인 발급기");
+            facilityMarkerOptions[index].icon(BitmapDescriptorFactory.fromBitmap(certificate));
+            facilityMarekrs[index] = googleMap.addMarker(facilityMarkerOptions[index]);
+            facilityMarekrs[index].setVisible(false);
+        }
+
+        facilityMarkerOptions[index] = new MarkerOptions();
+        facilityMarkerOptions[index]
+                .position(new LatLng(postOffPositions[0], postOffPositions[1]))
+                .title("우체국");
+        facilityMarkerOptions[index].icon(BitmapDescriptorFactory.fromBitmap(post_office));
+        facilityMarekrs[index] = googleMap.addMarker(facilityMarkerOptions[index]);
+        facilityMarekrs[index].setVisible(false);
+        index++;
+
+        for (int i = 0; i < restaurantPositions.length; i++, index++) {
+            facilityMarkerOptions[index] = new MarkerOptions();
+            facilityMarkerOptions[index]
+                    .position(new LatLng(restaurantPositions[i][0], restaurantPositions[i][1]))
+                    .title(restaurantNames[i]);
+            facilityMarkerOptions[index].icon(BitmapDescriptorFactory.fromBitmap(restaurant));
+            facilityMarekrs[index] = googleMap.addMarker(facilityMarkerOptions[index]);
+            facilityMarekrs[index].setVisible(false);
+        }
+
+
+
         attMarkerOptions = new MarkerOptions[attNames.length];
         for (int i = 0; i < attNames.length; i++) {
             attMarkerOptions[i] = new MarkerOptions();
             attMarkerOptions[i]
                     .position(new LatLng(attPositions[i][0], attPositions[i][1]))
-                    .snippet(attNames[i]);
+                    .title(attNames[i]);
+            attMarkerOptions[i].icon(BitmapDescriptorFactory.fromBitmap(gomsolee));
             attMarkers[i] = googleMap.addMarker(attMarkerOptions[i]);
             attMarkers[i].setVisible(false);
         }
@@ -323,14 +408,6 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-//    @Override
-//    public boolean onMarkerClick(Marker marker) {
-//        accessMarker(marker.getTitle());
-//
-//        return true;
-//    }
-
-
 
     @Override
     protected void onStart() {
@@ -342,40 +419,6 @@ public class MainActivity extends AppCompatActivity implements
         mGoogleApiClient.disconnect();
         super.onStop();
     }
-
-
-//    public void setCurrentLocation(Location location, String markerTitle, String markerSnippet) {
-//        if (currentMarker != null) currentMarker.remove();
-//
-//        LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-//
-//        MarkerOptions markerOptions = new MarkerOptions();
-//        markerOptions.position(currentLatLng);
-//        markerOptions.title(markerTitle);
-//        markerOptions.snippet(markerSnippet);
-//        markerOptions.draggable(true);
-//
-//        BitmapDrawable bitmapdraw = (BitmapDrawable)getResources().getDrawable(R.drawable.red_leaf_marker);
-//        Bitmap b = bitmapdraw.getBitmap();
-//        Bitmap smallMarker = Bitmap.createScaledBitmap(b, 100, 100, false);
-//        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
-//        currentMarker = mGoogleMap.addMarker(markerOptions);
-//
-//        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(currentLatLng);
-//        mGoogleMap.moveCamera(cameraUpdate);
-//
-//
-//
-//        int result = checkDistance(currentMarker.getPosition().latitude, currentMarker.getPosition().longitude);
-//        if (result != -1) {
-//            accessMarker(arrMarkerOptions[result].getTitle());
-//            mFusedLocationClient.removeLocationUpdates(locationCallback);
-//        }
-//        if (result == -1 && checkPermission()) {
-//                mFusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
-//        }
-//    }
-
 
 
     public void setDefaultLocation() {
@@ -440,20 +483,26 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void showFacility(View view) {
-//        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.busan.go.kr/geopark/tm0303"));
-//        startActivity(intent);
-//        finish();
+        bFacilityOn.setVisibility(View.INVISIBLE);
+        bFacilityOff.setVisibility(View.VISIBLE);
 
+        for (Marker marker: facilityMarekrs) {
+            marker.setVisible(true);
+        }
+    }
 
+    public void hideFacility(View view) {
+        bFacilityOn.setVisibility(View.VISIBLE);
+        bFacilityOff.setVisibility(View.INVISIBLE);
+
+        for (Marker marker: facilityMarekrs) {
+            marker.setVisible(false);
+        }
     }
 
     public void drawRoute(View view) {
         bCourseOn.setVisibility(View.INVISIBLE);
         bCourseOff.setVisibility(View.VISIBLE);
-
-        for (Marker marker: markers) {
-            marker.setVisible(false);
-        }
 
         for (Marker marker: attMarkers) {
             marker.setVisible(true);
@@ -476,21 +525,15 @@ public class MainActivity extends AppCompatActivity implements
                         new LatLng(35.13366328397016, 129.10451120670626),
                         new LatLng(35.133819386022374, 129.10426766585022),
                         new LatLng(35.13559036604174, 129.1040372537777),
-                        new LatLng(35.135455756938384, 129.10220079638222),
+                        new LatLng(35.135464365500354, 129.10225427805685),
                         new LatLng(35.13348560912848, 129.10252999027702)));
 
         polyline1.setColor(COLOR_VIOLET_ARGB);
-
-
     }
 
     public void hideRoute(View view) {
         bCourseOff.setVisibility(View.INVISIBLE);
         bCourseOn.setVisibility(View.VISIBLE);
-
-        for (Marker marker: markers) {
-            marker.setVisible(true);
-        }
 
         for(Marker marker: attMarkers) {
             marker.setVisible(false);
@@ -539,26 +582,25 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public int checkDistance(double latitude, double longitude) {
-        for (int i=0; i<arrMarkerOptions.length; i++) {
-            if (getDistance(latitude, longitude, arrMarkerOptions[i].getPosition().latitude, arrMarkerOptions[i].getPosition().longitude) <= 50) {
+        // 어떤 명소에 50m 이내로 접근하면 그 명소의 index 값 return
+        for (int i=0; i<attMarkerOptions.length; i++) {
+            if (getDistance(latitude, longitude, attMarkerOptions[i].getPosition().latitude, attMarkerOptions[i].getPosition().longitude) <= 50) {
                 return i;
             }
         }
         return -1;
     }
 
-    public void setDialog(String s) {
-        final int id = Integer.parseInt(s);
-
+    public void setDialog(final int attId) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(arrMarkerOptions[id].getSnippet() + "에 대한 설명을 보시겠습니까?");
+        builder.setMessage(attMarkerOptions[attId].getTitle() + "에 대한 설명을 보시겠습니까?");
         builder.setPositiveButton("예",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getApplicationContext(), arrMarkerOptions[id].getSnippet() + " 설명 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getBaseContext(), DisplaySubCommentActivity.class);
+                        Toast.makeText(getApplicationContext(), attMarkerOptions[attId].getTitle() + " 설명 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getBaseContext(), DisplayAttDesc.class);
 
-                        intent.putExtra("id", id);
+                        intent.putExtra("id", attId);
 
                         startActivity(intent);
                     }

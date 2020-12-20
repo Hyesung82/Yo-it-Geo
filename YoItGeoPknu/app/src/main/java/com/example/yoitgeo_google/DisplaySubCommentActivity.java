@@ -425,9 +425,6 @@ public class DisplaySubCommentActivity
 
         ArrayAdapter<CharSequence> adapter;
         switch (buildingId) {
-            case 0: adapter = ArrayAdapter.createFromResource(this,
-                    R.array.a11_floors, android.R.layout.simple_spinner_item);
-            break;
             case 1: adapter = ArrayAdapter.createFromResource(this,
                     R.array.a12_floors, android.R.layout.simple_spinner_item);
             break;

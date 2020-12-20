@@ -14,21 +14,36 @@
         android:layout_height="50dp"
         android:onClick="showMapImage"
         android:text="캠퍼스맵 사진으로 보기"
-        app:layout_constraintBottom_toTopOf="@+id/bFacility"
+        app:layout_constraintBottom_toTopOf="@+id/frameLayout1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/map" />
 
-    <Button
-        android:id="@+id/bFacility"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:onClick="showFacility"
-        android:text="설치 시설 보기"
+    <FrameLayout
+        android:id="@+id/frameLayout1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/frameLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bMapImage" />
+        app:layout_constraintTop_toBottomOf="@+id/bMapImage">
+
+        <Button
+            android:id="@+id/bFacilityOn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:onClick="showFacility"
+            android:text="설치 시설 보기" />
+
+        <Button
+            android:id="@+id/bFacilityOff"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:onClick="hideFacility"
+            android:text="설치 시설 숨기기" />
+    </FrameLayout>
+
+
 
     <FrameLayout
         android:id="@+id/frameLayout"
@@ -36,7 +51,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bFacility">
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout1">
 
         <Button
             android:id="@+id/bCourseOn"

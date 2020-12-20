@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements
         ActivityCompat.OnRequestPermissionsResultCallback {
 
 
-    private static final int COLOR_VIOLET_ARGB = 0x806042f5;
+    private static final int COLOR_YELLOW_ARGB = 0x80fcba03;
 
     double positions[][] = {{35.134055, 129.103140}, {35.134467, 129.103149},
             {35.134807, 129.103108}, {35.135348, 129.103015}, {35.135456, 129.103823},
@@ -112,8 +112,10 @@ public class MainActivity extends AppCompatActivity implements
 
 
     double attPositions[][] = {{35.1336261887728, 129.10165435259654},
-            {35.1327717594553, 129.10247744349874}, {35.13211126746617, 129.10284088408116}};
-    String attNames[] = {"모과나무", "백경동산", "히말라야시다 숲"};
+            {35.1327717594553, 129.10247744349874}, {35.13211126746617, 129.10284088408116},
+            {35.13465212505122, 129.10417285180696}, {35.13510523739829, 129.1024697029263},
+            {35.134657256000764, 129.1038893232547}};
+    String attNames[] = {"모과나무", "백경동산", "히말라야시다 숲", "벚꽃길", "향파문학비", "도란뜰"};
 
 
     Button bCourseOn, bCourseOff;
@@ -528,7 +530,7 @@ public class MainActivity extends AppCompatActivity implements
                         new LatLng(35.135464365500354, 129.10225427805685),
                         new LatLng(35.13348560912848, 129.10252999027702)));
 
-        polyline1.setColor(COLOR_VIOLET_ARGB);
+        polyline1.setColor(COLOR_YELLOW_ARGB);
     }
 
     public void hideRoute(View view) {

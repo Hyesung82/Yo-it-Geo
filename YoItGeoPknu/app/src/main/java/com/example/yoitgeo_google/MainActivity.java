@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -16,7 +15,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -114,8 +112,10 @@ public class MainActivity extends AppCompatActivity implements
     double attPositions[][] = {{35.1336261887728, 129.10165435259654},
             {35.1327717594553, 129.10247744349874}, {35.13211126746617, 129.10284088408116},
             {35.13465212505122, 129.10417285180696}, {35.13510523739829, 129.1024697029263},
-            {35.134657256000764, 129.1038893232547}};
-    String attNames[] = {"모과나무", "백경동산", "히말라야시다 숲", "벚꽃길", "향파문학비", "도란뜰"};
+            {35.134657256000764, 129.1038893232547}, {35.13116657885639, 129.10619107881888},
+            {35.134455017782415, 129.1031200835694}};
+    String attNames[] = {"모과나무", "백경동산", "히말라야시다 숲", "벚꽃길", "향파문학비", "도란뜰",
+    "행복기숙사", "1호관"};  // 행복기숙사는 테스트용
 
 
     Button bCourseOn, bCourseOff;
@@ -149,6 +149,9 @@ public class MainActivity extends AppCompatActivity implements
     Marker[] facilityMarekrs = new Marker[atmPositions.length + copyMachinePositions.length
             + certMachinePositions.length + 1 + restaurantPositions.length];
     Marker[] attMarkers = new Marker[attPositions.length];
+
+
+    AttDescDialog attDescDialog;
 
 
     @Override
@@ -544,31 +547,6 @@ public class MainActivity extends AppCompatActivity implements
         polyline1.setVisible(false);
     }
 
-//    public void onLastLocationButtonClicked(View view) {
-//        // 권한 체크
-//        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-//                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_REQUEST_CODE);
-//                return;
-//        }
-//        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-//            @Override
-//            public void onSuccess(Location location) {
-//                if (location != null) {
-//                    // 현재 위치
-//                    LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
-//                    mGoogleMap.addMarker(new MarkerOptions()
-//                            .position(myLocation)
-//                            .title("현재 위치"));
-//                    mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
-//                    // 카메라 줌
-//                    mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(17.0f));
-//                    System.out.println(myLocation.latitude + ", " + myLocation.longitude);
-//                }
-//            }
-//        });
-//
-//    }
 
     public double getDistance(double latitude1, double longitude1, double latitude2, double longitude2) {
         Location startPos = new Location("PointA");
@@ -594,17 +572,15 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void setDialog(final int attId) {
+        attDescDialog = new AttDescDialog(this, attId);
+        attDescDialog.setCancelable(false);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(attMarkerOptions[attId].getTitle() + "에 대한 설명을 보시겠습니까?");
         builder.setPositiveButton("예",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getApplicationContext(), attMarkerOptions[attId].getTitle() + " 설명 페이지로 이동합니다.", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getBaseContext(), DisplayAttDesc.class);
-
-                        intent.putExtra("id", attId);
-
-                        startActivity(intent);
+                        attDescDialog.show();
                     }
                 });
         builder.setNegativeButton("아니오",
